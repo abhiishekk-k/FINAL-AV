@@ -1,0 +1,1033 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>ABHI VISION | Bespoke Luxury Frames</title>
+    <!-- Premium Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Poppins:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-gold: #d4af37;
+            --light-gold: #fcd34d;
+            --deep-black: #0a0a0a;
+            --header-bg: rgba(10, 10, 10, 0.95);
+            --announcement-bg: #141414;
+            --text-main: #e0e0e0;
+            --text-muted: #a0a0a0;
+            --transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            --header-height: 70px;
+            --announcement-height: 40px;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        
+        html, body { 
+            width: 100%; 
+            min-height: 100%;
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--deep-black);
+            color: var(--text-main);
+            line-height: 1.6;
+            background: radial-gradient(circle at 50% 0%, #1a1a1a 0%, #0a0a0a 100%);
+            background-attachment: fixed;
+            scroll-behavior: smooth;
+            overflow-x: hidden;
+        }
+
+        .container { width: 100%; max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+
+        /* STICKY ANNOUNCEMENT BAR */
+        .announcement-bar {
+            height: var(--announcement-height);
+            background: var(--announcement-bg);
+            border-bottom: 1px solid rgba(212, 175, 55, 0.15);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 2001;
+            overflow: hidden;
+        }
+
+        .announcement-slider {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+            max-width: 900px;
+            padding: 0 10px;
+            height: 100%;
+        }
+
+        .announcement-text-container {
+            flex: 1;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .announcement-item {
+            position: absolute;
+            width: 100%;
+            text-align: center;
+            font-size: 0.72rem;
+            font-weight: 500;
+            letter-spacing: 1.2px;
+            text-transform: uppercase;
+            color: var(--light-gold);
+            opacity: 0;
+            transform: translateY(15px);
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            pointer-events: none;
+            padding: 0 10px;
+            line-height: 1.4;
+        }
+
+        .announcement-item.active {
+            opacity: 1;
+            transform: translateY(0);
+            pointer-events: auto;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+        }
+
+        .announcement-item.exit {
+            opacity: 0;
+            transform: translateY(-15px);
+            position: absolute;
+        }
+
+        .announcement-nav {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            padding: 5px 15px;
+            font-size: 0.75rem;
+            transition: color 0.3s, transform 0.2s;
+            z-index: 5;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .announcement-nav:hover { color: var(--primary-gold); }
+
+        /* STICKY MAIN HEADER */
+        header {
+            position: fixed;
+            top: var(--announcement-height);
+            left: 0;
+            width: 100%;
+            height: var(--header-height);
+            background: var(--header-bg);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(212, 175, 55, 0.1);
+            z-index: 2000;
+            display: flex;
+            align-items: center;
+        }
+
+        main { padding-top: calc(var(--announcement-height) + var(--header-height)); }
+
+        nav { display: flex; justify-content: space-between; align-items: center; width: 100%; }
+
+        .brand-link { display: flex; align-items: center; text-decoration: none; gap: 12px; cursor: pointer; }
+
+        .logo-circle-container {
+            position: relative;
+            width: 38px;
+            height: 38px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .av-circle-logo {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--light-gold) 0%, var(--primary-gold) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #000;
+            font-family: 'Playfair Display', serif;
+            font-weight: 900;
+            font-size: 0.95rem;
+            border: 1px solid #000;
+            z-index: 2;
+        }
+
+        .logo-circle-container::after {
+            content: '';
+            position: absolute;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            padding: 1.5px;
+            background: conic-gradient(from 0deg, transparent 40%, var(--primary-gold) 100%);
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            mask-composite: exclude;
+            animation: rotateGlow 3s linear infinite;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        @keyframes rotateGlow {
+            from { transform: translate(-50%, -50%) rotate(0deg); }
+            to { transform: translate(-50%, -50%) rotate(360deg); }
+        }
+
+        .brand-text-content { display: flex; flex-direction: column; }
+        .brand-title-text {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: #fff;
+            letter-spacing: 1px;
+            line-height: 1.1;
+        }
+        .brand-sub-text {
+            font-size: 0.6rem;
+            color: var(--primary-gold);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-top: 1px;
+        }
+
+        .menu-btn { 
+            cursor: pointer; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: flex-end;
+            justify-content: center;
+            gap: 5px; 
+            width: 40px;
+            height: 40px;
+            z-index: 4000;
+        }
+        .menu-btn span { 
+            display: block; 
+            height: 2px; 
+            background: var(--primary-gold); 
+            border-radius: 2px; 
+            transition: all 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
+            transform-origin: center right;
+        }
+        .menu-btn span:nth-child(1) { width: 20px; }
+        .menu-btn span:nth-child(2) { width: 28px; }
+        .menu-btn span:nth-child(3) { width: 20px; }
+
+        .menu-btn.active span:nth-child(1) { transform: rotate(-45deg) translate(0px, 0px); width: 28px; }
+        .menu-btn.active span:nth-child(2) { opacity: 0; transform: translateX(10px); }
+        .menu-btn.active span:nth-child(3) { transform: rotate(45deg) translate(0px, 0px); width: 28px; }
+
+        .nav-overlay { 
+            position: fixed; 
+            inset: 0; 
+            background: rgba(0,0,0,0.98); 
+            z-index: 3000; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            justify-content: center; 
+            gap: 30px; 
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .nav-overlay.active { opacity: 1; visibility: visible; }
+        .nav-overlay a { 
+            font-family: 'Playfair Display', serif; 
+            font-size: 2.2rem; 
+            color: #fff; 
+            text-decoration: none; 
+            transform: translateY(30px);
+            opacity: 0;
+            transition: all 0.4s;
+        }
+        .nav-overlay.active a { transform: translateY(0); opacity: 1; }
+
+        /* SECTIONS */
+        .page-section { display: none; padding: 40px 0; animation: fadeIn 0.5s ease forwards; min-height: 60vh; }
+        .page-section.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        .hero { padding: 60px 0 40px; text-align: center; }
+        .hero-title { font-family: 'Playfair Display', serif; font-size: 3rem; font-weight: 700; letter-spacing: 2px; margin-bottom: 10px; color: #fff; }
+        .hero-tagline { font-family: 'Playfair Display', serif; font-style: italic; color: var(--primary-gold); font-size: 1.2rem; margin-bottom: 40px; display: block; }
+        .hero-subtext { color: var(--text-muted); font-size: 1rem; max-width: 300px; margin: 0 auto 50px; }
+
+        .hero-btns { display: flex; flex-direction: column; gap: 15px; align-items: center; }
+        .btn { width: 260px; padding: 14px 0; font-size: 0.85rem; font-weight: 600; text-transform: uppercase; letter-spacing: 2px; border-radius: 4px; cursor: pointer; text-decoration: none; border: none; text-align: center; display: inline-block; }
+        .btn-gold { background: linear-gradient(to right, #d4af37, #fcd34d); color: #000; }
+        .btn-outline { background: rgba(255, 255, 255, 0.05); color: #fff; border: 1px solid rgba(212, 175, 55, 0.4); }
+
+        /* VISION SECTION */
+        .vision-section { 
+            padding: 80px 0; 
+            text-align: center; 
+            scroll-margin-top: calc(var(--header-height) + var(--announcement-height) + 20px);
+            height: auto;
+            overflow: visible;
+        }
+        .vision-text { 
+            font-size: 1.1rem; 
+            line-height: 1.8; 
+            color: var(--text-main); 
+            max-width: 900px; 
+            margin: 0 auto; 
+            height: auto;
+            overflow: visible;
+            display: block;
+        }
+        .vision-text b { color: var(--primary-gold); font-weight: 600; }
+
+        .section-title { font-family: 'Playfair Display', serif; font-size: 2.2rem; color: var(--primary-gold); text-align: center; margin-bottom: 40px; }
+        
+        /* TECH SECTION ADDITIONS */
+        .tech-video-wrapper {
+            position: relative;
+            width: 100%;
+            max-width: 800px;
+            margin: 0 auto;
+            aspect-ratio: 16 / 9;
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            border-radius: 8px;
+            overflow: hidden;
+            background: #000;
+            transition: var(--transition);
+        }
+        .tech-video-wrapper:hover {
+            border-color: var(--primary-gold);
+            box-shadow: 0 0 20px rgba(212, 175, 55, 0.15);
+        }
+        .tech-video-wrapper iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: 0;
+        }
+        .tech-description {
+            max-width: 900px;
+            margin: 30px auto;
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 1.05rem;
+            line-height: 1.8;
+        }
+
+        /* SEARCH BAR SECTION - FLEX IMPLEMENTATION */
+        .search-container {
+            max-width: 600px;
+            margin: -20px auto 40px;
+            padding: 0 10px;
+        }
+
+        .search-wrapper {
+            display: flex;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            border-radius: 50px;
+            padding-left: 20px;
+            transition: var(--transition);
+        }
+
+        .search-wrapper:focus-within {
+            background: rgba(255, 255, 255, 0.06);
+            border-color: var(--primary-gold);
+            box-shadow: 0 0 15px rgba(212, 175, 55, 0.15);
+        }
+
+        .search-wrapper i {
+            color: var(--primary-gold);
+            font-size: 0.9rem;
+            flex-shrink: 0;
+        }
+
+        .search-input {
+            flex-grow: 1;
+            width: 100%;
+            padding: 14px 18px 14px 12px;
+            background: transparent;
+            border: none;
+            color: #fff;
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.9rem;
+            margin: 0; /* Clear default margins */
+        }
+
+        .search-input:focus {
+            outline: none;
+        }
+
+        .no-results {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            border: 1px dashed rgba(212, 175, 55, 0.2);
+            border-radius: 12px;
+        }
+
+        /* COLLECTION GRID */
+        .frames-grid { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); 
+            gap: 24px; 
+            width: 100%; 
+            padding-bottom: 40px; 
+        }
+        
+        .product-card { 
+            background: rgba(255,255,255,0.02); 
+            border: 1px solid rgba(255,255,255,0.05); 
+            transition: 0.3s; 
+            overflow: hidden; 
+            display: flex; 
+            flex-direction: column; 
+            height: 100%;
+        }
+        
+        .product-card:hover { border-color: var(--primary-gold); transform: translateY(-5px); }
+        
+        .product-img-wrapper { 
+            position: relative;
+            width: 100%;
+        
+            overflow: hidden;
+            background: #111;
+            cursor: pointer;
+        }
+
+        .product-img-wrapper img { 
+    width: 100%;
+    height: auto;
+    display: block;
+    object-fit: contain;
+}
+        
+        
+        .product-card:hover .product-img-wrapper img {
+            transform: scale(1.08);
+        }
+
+        .product-info { 
+            padding: 24px; 
+            text-align: center; 
+            flex-grow: 1; 
+            display: flex; 
+            flex-direction: column; 
+            justify-content: space-between; 
+            gap: 12px;
+        }
+        
+        .category-tag {
+            font-size: 0.65rem;
+            color: var(--primary-gold);
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            font-weight: 600;
+            margin-bottom: 4px;
+            display: block;
+        }
+
+        .product-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.2rem;
+            color: #fff;
+            margin-bottom: 8px;
+            line-height: 1.3;
+        }
+
+        .product-desc {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            line-height: 1.5;
+            margin-bottom: 16px;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .btn-sm { width: 100%; padding: 12px 0; font-size: 0.75rem; margin-top: auto; }
+
+        /* PRODUCT OVERLAY MODAL */
+        .product-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.92);
+            backdrop-filter: blur(10px);
+            z-index: 5000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+
+        .product-overlay.active {
+            display: flex;
+            opacity: 1;
+        }
+
+        .overlay-close {
+            position: fixed;
+            top: 30px;
+            right: 30px;
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            border: 1.5px solid var(--primary-gold);
+            background: #000;
+            color: var(--primary-gold);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 5001;
+            transition: var(--transition);
+            font-size: 1.1rem;
+        }
+
+        .overlay-close:hover {
+            background: var(--primary-gold);
+            color: #000;
+            box-shadow: 0 0 20px rgba(212, 175, 55, 0.5);
+            transform: rotate(90deg);
+        }
+
+        .overlay-content {
+            background: #0d0d0d;
+            border: 1px solid rgba(212, 175, 55, 0.2);
+            border-radius: 12px;
+            max-width: 600px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            transform: translateY(40px);
+            transition: transform 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+            scrollbar-width: thin;
+            scrollbar-color: var(--primary-gold) #0d0d0d;
+        }
+
+        .product-overlay.active .overlay-content {
+            transform: translateY(0);
+        }
+
+        .overlay-img-wrapper {
+            width: 100%;
+            height: 420px;
+            background: #000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .overlay-img-wrapper img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            padding: 20px;
+        }
+
+        .overlay-body {
+            padding: 30px;
+        }
+
+        .specs-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin: 25px 0;
+            text-align: left;
+            border-top: 1px solid rgba(255,255,255,0.05);
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            padding: 20px 0;
+        }
+
+        .spec-item {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .spec-label {
+            font-size: 0.65rem;
+            color: var(--primary-gold);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 600;
+        }
+
+        .spec-value {
+            font-size: 0.85rem;
+            color: var(--text-main);
+        }
+
+        .overlay-price {
+            font-size: 1.6rem;
+            color: var(--primary-gold);
+            font-weight: 700;
+            margin-bottom: 25px;
+            font-family: 'Playfair Display', serif;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* FORMS */
+        .form-box { max-width: 600px; margin: 0 auto; background: rgba(255,255,255,0.02); padding: 40px; border: 1px solid rgba(212, 175, 55, 0.3); border-radius: 8px; scroll-margin-top: calc(var(--header-height) + var(--announcement-height) + 40px); }
+        input, select, textarea { width: 100%; background: #000; border: 1px solid #333; padding: 14px; color: #fff; margin-top: 8px; margin-bottom: 24px; font-family: inherit; border-radius: 4px; font-size: 0.95rem; }
+        input:focus, select:focus, textarea:focus { border-color: var(--primary-gold); outline: none; }
+        label { font-size: 0.8rem; color: var(--primary-gold); text-transform: uppercase; letter-spacing: 1.5px; font-weight: 600; }
+
+        footer { padding: 80px 0 40px; border-top: 1px solid rgba(212, 175, 55, 0.05); margin-top: 60px; }
+        .footer-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 40px; margin-bottom: 40px; }
+        .footer-col h4 { font-family: 'Playfair Display', serif; color: var(--primary-gold); margin-bottom: 20px; font-size: 1.1rem; }
+        .footer-item { display: flex; align-items: center; gap: 12px; margin-bottom: 15px; color: var(--text-muted); text-decoration: none; font-size: 0.9rem; }
+        .footer-item i { color: var(--primary-gold); width: 20px; text-align: center; }
+        .footer-bottom { text-align: center; padding-top: 30px; border-top: 1px solid rgba(255,255,255,0.03); }
+        .copyright { font-size: 0.7rem; color: #444; letter-spacing: 2px; text-transform: uppercase; }
+
+        @media (max-width: 600px) {
+            .hero-title { font-size: 2.2rem; }
+            .form-box { padding: 24px; }
+            .search-container { margin: -10px auto 30px; }
+            .frames-grid { grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 16px; }
+            .overlay-close { top: 20px; right: 20px; width: 44px; height: 44px; }
+            .specs-grid { grid-template-columns: 1fr; }
+            .overlay-img-wrapper { height: 320px; }
+            .overlay-body { padding: 20px; }
+            .tech-description { font-size: 0.95rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="announcement-bar">
+        <div class="announcement-slider">
+            <button class="announcement-nav" onclick="prevAnnouncement()"><i class="fas fa-chevron-left"></i></button>
+            <div class="announcement-text-container" id="announcementContainer"></div>
+            <button class="announcement-nav" onclick="nextAnnouncement()"><i class="fas fa-chevron-right"></i></button>
+        </div>
+    </div>
+
+    <header>
+        <div class="container">
+            <nav>
+                <div class="brand-link" onclick="navTo('home')">
+                    <div class="logo-circle-container"><div class="av-circle-logo">AV</div></div>
+                    <div class="brand-text-content">
+                        <span class="brand-title-text">ABHI VISION</span>
+                        <span class="brand-sub-text">by Abhishek Sahoo</span>
+                    </div>
+                </div>
+                <div class="menu-btn" id="menuBtn" onclick="toggleMenu()"><span></span><span></span><span></span></div>
+            </nav>
+        </div>
+    </header>
+
+    <div class="nav-overlay" id="navOverlay" onclick="handleOverlayClick(event)">
+        <a href="javascript:void(0)" onclick="navTo('home')">Home</a>
+        <a href="javascript:void(0)" onclick="navTo('collection')">Explore Designs</a>
+        <a href="javascript:void(0)" onclick="scrollToVision()">Our Vision</a>
+        <a href="javascript:void(0)" onclick="scrollToFooter()">Contact</a>
+    </div>
+
+    <!-- PRODUCT OVERLAY MODAL -->
+    <div class="product-overlay" id="productOverlay" onclick="if(event.target===this) closeProductOverlay()">
+        <button class="overlay-close" onclick="closeProductOverlay()"><i class="fas fa-times"></i></button>
+        <div class="overlay-content">
+            <div class="overlay-img-wrapper">
+                <img id="overlayImg" src="" alt="Product Detail">
+            </div>
+            <div class="overlay-body">
+                <span id="overlayCategory" class="category-tag"></span>
+                <h2 id="overlayTitle" class="product-title" style="font-size: 1.6rem; margin: 10px 0;"></h2>
+                <p id="overlayDesc" class="product-desc" style="-webkit-line-clamp: unset;"></p>
+                
+                <div class="specs-grid">
+                    <div class="spec-item">
+                        <span class="spec-label">Size Availability</span>
+                        <span class="spec-value">A4, 8.27 × 11.69 in</span>
+                    </div>
+                    <div class="spec-item">
+                        <span class="spec-label">Frame Type</span>
+                        <span class="spec-value">Premium Wooden Frame</span>
+                    </div>
+                    <div class="spec-item">
+                        <span class="spec-label">Print Quality</span>
+                        <span class="spec-value">Nova Fine Coated Professional Glossy Paper</span>
+                    </div>
+                    <div class="spec-item">
+                        <span class="spec-label">Mount Type</span>
+                        <span class="spec-value">Wall Hanging</span>
+                    </div>
+                    <div class="spec-item">
+                        <span class="spec-label">Customization</span>
+                        <span class="spec-value">Fully Personalized Design</span>
+                    </div>
+                    
+                </div>
+
+                <div class="overlay-price" id="overlayPrice"></div>
+                
+                <button class="btn btn-gold" id="overlayBookBtn" style="width: 100%;">Book This Design</button>
+            </div>
+        </div>
+    </div>
+
+    <main>
+        <div class="container">
+            <!-- HOME PAGE -->
+            <section id="home-section" class="page-section active">
+                <div class="hero">
+                    <h1 class="hero-title">ABHI VISION</h1>
+                    <span class="hero-tagline">Frames That Feel Premium, Prices That Feel Right</span>
+                    <p class="hero-subtext">Bringing your favorite memories to life with technology and art.</p>
+                    <div class="hero-btns">
+                        <button class="btn btn-gold" onclick="navTo('collection')">Explore Designs</button>
+                        <button class="btn btn-outline" onclick="navTo('custom')">Your Design</button>
+                    </div>
+                </div>
+                <!-- VISION SECTION -->
+                <div class="vision-section" id="visionSection">
+                    <h2 class="section-title">Vision of ABHI VISION</h2>
+                    <p class="vision-text">At <b>Abhi Vision</b>, we dream of providing every possible tech service to our community. Right now, we are putting all our energy into creating <b>beautiful frame designs</b>. We offer everything from simple custom frames to unique, tech-integrated frames that tell a story. Our goal is simple: to give you the <b>best quality</b> and most <b>creative designs</b> at a <b>very low cost</b>. We believe that everyone should be able to preserve their special moments and gifting someone speical moments without spending a fortune.</p>
+                </div>
+
+                <!-- NEW TECH SECTION -->
+                <div class="vision-section" style="padding-top: 40px;">
+                    <h2 class="section-title">OUR TECH INTEGRATED FRAMES</h2>
+                    <div class="tech-video-wrapper">
+                        <iframe src="https://www.youtube.com/embed/CD5DxrYyus4" title="Abhi Vision Tech Integrated Frames" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+                    </div>
+                    <p class="tech-description">
+                        “With Abhi Vision’s Tech Integrated Frames, you can enhance any design from our collection with a personalized QR experience. Simply choose a frame, and our team will connect with you to understand your requirements. Whether you wish to embed a special video, message, or memory — or prefer a classic frame without QR — everything is customized according to your vision in close coordination with our team.”
+                    </p>
+                    <div style="text-align: center; margin-top: 30px;">
+                        <button class="btn btn-gold" onclick="navTo('collection')">EXPLORE DESIGNS</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- EXPLORE COLLECTION PAGE -->
+            <section id="collection-section" class="page-section">
+                <h2 class="section-title">Ready Designs</h2>
+                
+                <div class="search-container">
+                    <div class="search-wrapper">
+                        <i class="fas fa-search"></i>
+                        <input type="text" id="designSearch" class="search-input" placeholder="Search by occasion, theme, or design name..." oninput="filterDesigns()">
+                    </div>
+                </div>
+
+                <div class="frames-grid" id="framesGrid"></div>
+                
+                <div id="booking-area" style="display:none; margin-top: 60px;">
+                    <h2 class="section-title">Book Your Frame</h2>
+                    <div class="form-box">
+                        <form id="bookForm">
+                            <label for="book_name">Your Name</label>
+                            <input type="text" id="book_name" name="book_name" placeholder="Enter your full name" required>
+                            
+                            <label for="book_phone">Contact Number</label>
+                            <input type="tel" id="book_phone" name="book_phone" placeholder="Enter your mobile number" required>
+                            
+                            <label for="selected_frame">Selected Frame</label>
+                            <input type="text" id="selected_frame" name="selected_frame" readonly style="background: #111; cursor: not-allowed;">
+
+                            <label for="book_message">Special Message</label>
+                            <textarea id="book_message" name="book_message" rows="4" placeholder="Any special instructions for this frame?"></textarea>
+                            
+                            <button type="submit" class="btn btn-gold" style="width:100%">Confirm Booking Request</button>
+                        </form>
+                    </div>
+                </div>
+            </section>
+
+            <!-- YOUR VISION PAGE -->
+            <section id="custom-section" class="page-section">
+                <h2 class="section-title">Your Vision</h2>
+                <div class="form-box">
+                    <p style="text-align:center; color:var(--text-muted); margin-bottom:30px; font-size:0.95rem;">Tell us your vision, and our creative team will connect with you personally to understand your preferred frame style, design choice, and customization details — ensuring a truly meaningful and personalized experience.</p>
+                    <form id="visionForm">
+                        <label for="vision_name">Your Name</label>
+                        <input type="text" id="vision_name" name="vision_name" placeholder="Enter your full name" required>
+                        
+                        <label for="vision_phone">Contact Number</label>
+                        <input type="tel" id="vision_phone" name="vision_phone" placeholder="Enter your mobile number" required>
+                        
+                        <label for="vision_message">Describe your Design</label>
+                        <textarea id="vision_message" name="vision_message" rows="5" placeholder="Tell us your vision and describe the style, theme, and details you would like in your custom frame." required></textarea>
+                        
+                        <button type="submit" class="btn btn-gold" style="width:100%">Share Design</button>
+                    </form>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <footer id="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-col">
+                    <h4>ABHI VISION</h4>
+                    <p style="font-size:0.85rem; color:var(--text-muted);">Bringing your favorite memories to life with technology and art.</p>
+                </div>
+                <div class="footer-col">
+                    <h4>Connect</h4>
+                    <a href="#" class="footer-item"><i class="fab fa-instagram"></i> @abhivision_official</a>
+                    <a href="mailto:contact.abhivision@gmail.com" class="footer-item"><i class="far fa-envelope"></i> contact.abhivision@gmail.com</a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p class="copyright">© 2025 ABHI VISION | BY ABHISHEK SAHOO</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
+
+    <script>
+        const announcements = ["Custom QR Code Frames", "Spotify Code Frames", "QR Code Frames with Web Pages", "Scan for Personalized Memories", "Add Games, Photos, Videos & More"];
+        let currentAnnouncement = 0;
+        function initAnnouncements() {
+            const container = document.getElementById('announcementContainer');
+            if(!container) return;
+            container.innerHTML = announcements.map((msg, i) => `<div class="announcement-item ${i === 0 ? 'active' : ''}">${msg}</div>`).join('');
+            setInterval(nextAnnouncement, 5000);
+        }
+        function updateAnnouncement(dir) {
+            const items = document.querySelectorAll('.announcement-item');
+            if(!items.length) return;
+            items[currentAnnouncement].classList.remove('active');
+            if(dir==='next') currentAnnouncement = (currentAnnouncement+1)%announcements.length;
+            else currentAnnouncement = (currentAnnouncement-1+announcements.length)%announcements.length;
+            items[currentAnnouncement].classList.add('active');
+        }
+        function nextAnnouncement(){ updateAnnouncement('next'); }
+        function prevAnnouncement(){ updateAnnouncement('prev'); }
+
+        let menuOpen = false;
+        function toggleMenu() {
+            menuOpen = !menuOpen;
+            document.getElementById('navOverlay').classList.toggle('active', menuOpen);
+            document.getElementById('menuBtn').classList.toggle('active', menuOpen);
+            document.body.style.overflow = menuOpen ? 'hidden' : '';
+        }
+        function handleOverlayClick(e){ if(e.target.id==='navOverlay') toggleMenu(); }
+        function navTo(page) {
+            document.querySelectorAll('.page-section').forEach(s => s.classList.remove('active'));
+            document.getElementById(page + '-section').classList.add('active');
+            if(menuOpen) toggleMenu();
+            window.scrollTo(0,0);
+        }
+        function scrollToVision(){ navTo('home'); setTimeout(()=>document.getElementById('visionSection').scrollIntoView({behavior:'smooth'}), 400); }
+        function scrollToFooter(){ if(menuOpen) toggleMenu(); document.getElementById('footer').scrollIntoView({behavior:'smooth'}); }
+
+        const frameData = [
+    {
+        title: "Little One – First Birthday Frame",
+        category: "Birthday Frames",
+        image: "https://raw.githubusercontent.com/abhiishekk-k/AV-WEBSITE-IMAGES/main/IMG_20260221_214029.jpg",
+        desc: "Celebrate your baby’s precious first milestone with a beautiful candle-shaped collage layout.",
+        tags: ["first birthday", "baby frame", "milestone", "candle theme"],
+        price: 249
+    },
+    {
+        title: "Forever Together – Classic Love Frame",
+        category: "Couple Romantic Frames",
+        image: "https://raw.githubusercontent.com/abhiishekk-k/AV-WEBSITE-IMAGES/main/IMG_20260221_214415.jpg",
+        desc: "A timeless romantic collage featuring a central portrait surrounded by cherished memories.",
+        tags: ["romantic", "couple", "love", "anniversary", "pre wedding"],
+        price: 299
+    },
+    {
+        title: "Stronger Together – Anniversary Frame",
+        category: "Anniversary Frames",
+        image: "https://raw.githubusercontent.com/abhiishekk-k/AV-WEBSITE-IMAGES/main/IMG_20260221_214450.jpg",
+        desc: "Mark another beautiful year of togetherness with this elegant wedding collage layout.",
+        tags: ["anniversary", "married life", "stronger together"],
+        price: 299
+    },
+    {
+        title: "Happy Married Life – Wedding Collage",
+        category: "Wedding Frames",
+        image: "https://raw.githubusercontent.com/abhiishekk-k/AV-WEBSITE-IMAGES/main/IMG_20260221_214545.jpg",
+        desc: "A traditional and elegant wedding memory frame crafted to celebrate your special day.",
+        tags: ["wedding", "marriage", "bride groom", "traditional"],
+        price: 299
+    },
+    {
+        title: "Together Forever – Love Story Frame",
+        category: "Couple Romantic Frames",
+        image: "https://raw.githubusercontent.com/abhiishekk-k/AV-WEBSITE-IMAGES/main/IMG_20260221_214626.jpg",
+        desc: "An artistic arch-style collage layout that beautifully frames your love story.",
+        tags: ["together forever", "engagement", "romantic gift"],
+        price: 299
+    },
+    {
+        title: "LoveFlix Original – Custom Couple Poster",
+        category: "Creative Theme Frames",
+        image: "https://raw.githubusercontent.com/abhiishekk-k/AV-WEBSITE-IMAGES/main/IMG_20260221_214644.jpg",
+        desc: "A creative OTT-inspired design turning your love story into a cinematic masterpiece.",
+        tags: ["loveflix", "netflix theme", "custom poster"],
+        price: 299
+    },
+    {
+        title: "Royal Wedding Bliss Frame",
+        category: "Wedding Frames",
+        image: "https://raw.githubusercontent.com/abhiishekk-k/AV-WEBSITE-IMAGES/main/IMG_20260221_215149.jpg",
+        desc: "A luxurious single-portrait wedding frame designed to showcase your royal wedding moments.",
+        tags: ["royal wedding", "reception", "bride groom"],
+        price: 349
+    },
+    {
+        title: "LOVE Typography Memory Frame",
+        category: "Creative Theme Frames",
+        image: "https://raw.githubusercontent.com/abhiishekk-k/AV-WEBSITE-IMAGES/main/IMG_20260221_215205.jpg",
+        desc: "A bold LOVE typography collage that creatively arranges your memories inside the word itself.",
+        tags: ["love typography", "anniversary gift", "creative frame"],
+        price: 349
+    },
+    {
+        title: "Forever Us – Minimal Love Frame",
+        category: "Couple Romantic Frames",
+        image: "https://raw.githubusercontent.com/abhiishekk-k/AV-WEBSITE-IMAGES/main/IMG_20260221_215251.jpg",
+        desc: "A clean and minimal 3-photo layout designed for modern couples who love simplicity.",
+        tags: ["minimal", "forever us", "couple gift"],
+        price: 299
+    },
+    {
+        title: "Polaroid Love Moments Frame",
+        category: "Creative Theme Frames",
+        image: "https://raw.githubusercontent.com/abhiishekk-k/AV-WEBSITE-IMAGES/main/1771691294362.png",
+        desc: "A charming polaroid-style collage layout capturing your sweetest memories in aesthetic format.",
+        tags: ["polaroid", "love memories", "valentine gift"],
+        price: 299
+    },
+    {
+        title: "Squad Forever – Friendship Collage Frame",
+        category: "Friendship Frames",
+        image: "https://raw.githubusercontent.com/abhiishekk-k/Rest-images/main/IMG_20260221_214705.jpg",
+        desc: "Celebrate your unforgettable squad memories with this dynamic group collage layout.",
+        tags: ["friends", "squad", "group photo", "farewell", "college memories"],
+        price: 249
+    }
+];
+
+        function renderCollection(filteredData = frameData) {
+            const grid = document.getElementById('framesGrid');
+            if(!grid) return;
+            if (filteredData.length === 0) {
+                grid.innerHTML = `<div class="no-results"><i class="fas fa-search-minus" style="font-size: 2rem; display: block; margin-bottom: 15px; opacity: 0.5;"></i>No designs found.</div>`;
+                return;
+            }
+            grid.innerHTML = filteredData.map(item => `
+                <div class="product-card">
+                    <div class="product-img-wrapper" onclick="openProductOverlay('${item.title}')">
+                        <img src="${item.image}" alt="${item.title}">
+                    </div>
+                    <div class="product-info">
+                        <div>
+                            <span class="category-tag">${item.category}</span>
+                            <h3 class="product-title">${item.title}</h3>
+                            <p class="product-desc">${item.desc}</p>
+                        </div>
+                        <button class="btn btn-gold btn-sm" onclick="openProductOverlay('${item.title}')">View Design Details</button>
+                    </div>
+                </div>`).join('');
+        }
+
+        function openProductOverlay(name) {
+            const product = frameData.find(f => f.title === name);
+            if(!product) return;
+
+            document.getElementById('overlayImg').src = product.image;
+            document.getElementById('overlayTitle').innerText = product.title;
+            document.getElementById('overlayCategory').innerText = product.category;
+            document.getElementById('overlayDesc').innerText = product.desc;
+            document.getElementById('overlayPrice').innerText = "At ₹" + product.price;
+            
+            document.getElementById('overlayBookBtn').onclick = () => {
+                closeProductOverlay();
+                bookThisFrame(product.title);
+            };
+
+            document.getElementById('productOverlay').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeProductOverlay() {
+            document.getElementById('productOverlay').classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        function filterDesigns() {
+            const query = document.getElementById('designSearch').value.toLowerCase();
+            const filtered = frameData.filter(item => {
+                const titleMatch = item.title.toLowerCase().includes(query);
+                const catMatch = item.category.toLowerCase().includes(query);
+                const tagMatch = item.tags.some(t => t.toLowerCase().includes(query));
+                return titleMatch || catMatch || tagMatch;
+            });
+            renderCollection(filtered);
+        }
+
+        function bookThisFrame(name) {
+            document.getElementById('booking-area').style.display = 'block';
+            document.getElementById('selected_frame').value = name;
+            document.getElementById('booking-area').scrollIntoView({behavior:'smooth'});
+            document.getElementById('book_name').focus();
+        }
+
+        (function() { emailjs.init("Uj_NBMZyADpANKzFV"); })();
+
+        document.getElementById("bookForm").addEventListener("submit", function(e) {
+            e.preventDefault();
+            const btn = e.target.querySelector('button');
+            const originalText = btn.innerText;
+            btn.innerText = "SENDING...";
+            btn.disabled = true;
+            const templateParams = { user_name: document.getElementById("book_name").value, user_phone: document.getElementById("book_phone").value, selected_frame: document.getElementById("selected_frame").value, message: document.getElementById("book_message").value };
+            emailjs.send("Service_Abhivision", "template_dzlbfn9", templateParams).then(() => { alert("Thank you! Request Sent."); document.getElementById("bookForm").reset(); document.getElementById('booking-area').style.display = 'none'; btn.innerText = originalText; btn.disabled = false; }, () => { alert("Error."); btn.innerText = originalText; btn.disabled = false; });
+        });
+
+        document.getElementById("visionForm").addEventListener("submit", function(e) {
+            e.preventDefault();
+            const btn = e.target.querySelector('button');
+            const originalText = btn.innerText;
+            btn.innerText = "SENDING...";
+            btn.disabled = true;
+            const templateParams = { user_name: document.getElementById("vision_name").value, user_phone: document.getElementById("vision_phone").value, selected_frame: "Custom Frame Idea", message: document.getElementById("vision_message").value };
+            emailjs.send("Service_Abhivision", "template_dzlbfn9", templateParams).then(() => { alert("Sent!"); document.getElementById("visionForm").reset(); btn.innerText = originalText; btn.disabled = false; }, () => { alert("Error."); btn.innerText = originalText; btn.disabled = false; });
+        });
+
+        window.onload = () => { initAnnouncements(); renderCollection(); };
+    </script>
+</body>
+</html>
