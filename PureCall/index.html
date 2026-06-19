@@ -3,15 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PureCall - Secure Login</title>
+    <title>PureCall - Login</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
         :root {
-            --primary-green: #059669; /* Updated to match main app professional green */
+            --primary-green: #059669; 
             --dark-green: #047857;
             --white: #ffffff;
-            --bg-color: #f9fafb;
-            --text-dark: #1f2937;
+            --text-dark: #111827;
             --text-gray: #6b7280;
             --border-color: #e5e7eb;
         }
@@ -21,70 +20,80 @@
             padding: 0;
             box-sizing: border-box;
             font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            -webkit-tap-highlight-color: transparent;
         }
 
         body {
-            background-color: var(--bg-color);
+            /* Soft glowing background mimicking the reference image but with a green tint */
+            background: radial-gradient(circle at top right, #d1fae5 0%, #f3f4f6 50%, #ffffff 100%);
             color: var(--text-dark);
             height: 100vh;
             display: flex;
             flex-direction: column;
-            justify-content: center;
+        }
+
+        /* Top content area pushes down the main text */
+        .content-area {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            padding: 0 24px 30px 24px;
+        }
+
+        /* Brand / Logo styling */
+        .brand-header {
+            display: flex;
             align-items: center;
-            padding: 20px;
+            gap: 12px;
+            margin-bottom: 24px;
         }
 
-        .login-container {
+        .logo-box {
+            width: 46px;
+            height: 46px;
             background: var(--white);
-            padding: 40px 30px;
-            border-radius: 16px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.04);
-            width: 100%;
-            max-width: 400px;
-            text-align: center;
-            border-top: 5px solid var(--primary-green);
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.4rem;
+            color: var(--primary-green);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.06);
         }
 
-        .title {
-            font-size: 2rem;
+        .brand-text {
+            font-size: 1.5rem;
             font-weight: 800;
-            color: var(--primary-green);
-            margin-bottom: 4px;
+            color: var(--text-dark);
             letter-spacing: -0.5px;
         }
 
-        .founder-text {
-            font-size: 0.85rem;
+        .brand-text span {
+            color: var(--primary-green);
+        }
+
+        /* Typography */
+        .headline {
+            font-size: 3rem;
+            font-weight: 800;
+            line-height: 1.1;
+            margin-bottom: 16px;
+            letter-spacing: -1px;
+            color: var(--text-dark);
+        }
+
+        .subheadline {
+            font-size: 1.05rem;
             color: var(--text-gray);
-            font-weight: 500;
-            margin-bottom: 25px;
-        }
-
-        .description {
-            background: var(--bg-color);
-            padding: 20px;
-            border-radius: 12px;
-            border: 1px solid var(--border-color);
-            margin-bottom: 30px;
-        }
-
-        .description p {
-            color: var(--text-dark);
-            font-size: 0.95rem;
             line-height: 1.6;
-            margin: 0;
+            max-width: 95%;
         }
 
-        .login-section {
-            border-top: 1px solid var(--border-color);
-            padding-top: 25px;
-        }
-
-        .login-prompt {
-            color: var(--text-dark);
-            font-size: 1rem;
-            font-weight: 600;
-            margin-bottom: 15px;
+        /* Action Area (Bottom) */
+        .action-area {
+            padding: 0 24px 40px 24px;
+            background: transparent;
         }
 
         .google-btn {
@@ -94,62 +103,73 @@
             width: 100%;
             background-color: var(--white);
             color: var(--text-dark);
-            border: 1px solid #d1d5db;
-            padding: 14px;
-            border-radius: 8px;
-            font-size: 1rem;
-            font-weight: 600;
+            border: 1px solid var(--border-color);
+            padding: 18px;
+            border-radius: 12px;
+            font-size: 1.05rem;
+            font-weight: 700;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: all 0.2s ease;
             gap: 12px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.03);
         }
 
-        .google-btn:hover {
+        .google-btn:active {
+            transform: scale(0.98);
             background-color: #f9fafb;
-            border-color: #9ca3af;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
         }
 
         .google-icon {
-            width: 20px;
-            height: 20px;
+            width: 22px;
+            height: 22px;
+        }
+
+        .footer-tagline {
+            text-align: center;
+            color: #9ca3af;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-top: 20px;
+            letter-spacing: 0.2px;
         }
 
         .loading-text {
             display: none;
+            text-align: center;
             color: var(--primary-green);
             margin-top: 15px;
-            font-size: 0.9rem;
-            font-weight: 500;
+            font-size: 0.95rem;
+            font-weight: 600;
         }
     </style>
 </head>
 <body>
 
-    <div class="login-container">
-        
-        <h1 class="title">PureCall</h1>
-        <p class="founder-text">Developed by Abhishek Sahoo</p>
-        
-        <div class="description">
-            <p>Your personal directory for trusted professionals. Securely organize, sync, and access your essential contacts with a single tap.</p>
+    <div class="content-area">
+        <div class="brand-header">
+            <div class="logo-box">
+                <i class="fas fa-address-book"></i>
+            </div>
+            <div class="brand-text">Pure<span>Call</span></div>
         </div>
 
-        <div class="login-section">
-            <p class="login-prompt">Sign in to access your network</p>
-            
-            <button id="googleLoginBtn" class="google-btn">
-                <svg class="google-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">
-                    <path fill="#FFC107" d="M43.611,20.083H42V20H24v8h11.303c-1.649,4.657-6.08,8-11.303,8c-6.627,0-12-5.373-12-12c0-6.627,5.373-12,12-12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C12.955,4,4,12.955,4,24c0,11.045,8.955,20,20,20c11.045,0,20-8.955,20-20C44,22.659,43.862,21.35,43.611,20.083z"/>
-                    <path fill="#FF3D00" d="M6.306,14.691l6.571,4.819C14.655,15.108,18.961,12,24,12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C16.318,4,9.656,8.337,6.306,14.691z"/>
-                    <path fill="#4CAF50" d="M24,44c5.166,0,9.86-1.977,13.409-5.192l-6.19-5.238C29.211,35.091,26.715,36,24,36c-5.202,0-9.619-3.317-11.283-7.946l-6.522,5.025C9.505,39.556,16.227,44,24,44z"/>
-                    <path fill="#1976D2" d="M43.611,20.083H42V20H24v8h11.303c-0.792,2.237-2.231,4.166-4.087,5.571c0.001-0.001,0.002-0.001,0.003-0.002l6.19,5.238C36.971,39.205,44,34,44,24C44,22.659,43.862,21.35,43.611,20.083z"/>
-                </svg>
-                Continue with Google
-            </button>
-            <p id="loadingMsg" class="loading-text"><i class="fas fa-spinner fa-spin"></i> Authenticating...</p>
-        </div>
+        <h1 class="headline">Professional contacts,<br>organized well.</h1>
+        <p class="subheadline">Store and access your essential professional network. Securely synced right to your phone.</p>
+    </div>
+
+    <div class="action-area">
+        <button id="googleLoginBtn" class="google-btn">
+            <svg class="google-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">
+                <path fill="#FFC107" d="M43.611,20.083H42V20H24v8h11.303c-1.649,4.657-6.08,8-11.303,8c-6.627,0-12-5.373-12-12c0-6.627,5.373-12,12-12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C12.955,4,4,12.955,4,24c0,11.045,8.955,20,20,20c11.045,0,20-8.955,20-20C44,22.659,43.862,21.35,43.611,20.083z"/>
+                <path fill="#FF3D00" d="M6.306,14.691l6.571,4.819C14.655,15.108,18.961,12,24,12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C16.318,4,9.656,8.337,6.306,14.691z"/>
+                <path fill="#4CAF50" d="M24,44c5.166,0,9.86-1.977,13.409-5.192l-6.19-5.238C29.211,35.091,26.715,36,24,36c-5.202,0-9.619-3.317-11.283-7.946l-6.522,5.025C9.505,39.556,16.227,44,24,44z"/>
+                <path fill="#1976D2" d="M43.611,20.083H42V20H24v8h11.303c-0.792,2.237-2.231,4.166-4.087,5.571c0.001-0.001,0.002-0.001,0.003-0.002l6.19,5.238C36.971,39.205,44,34,44,24C44,22.659,43.862,21.35,43.611,20.083z"/>
+            </svg>
+            Continue with Google
+        </button>
+        <p id="loadingMsg" class="loading-text"><i class="fas fa-spinner fa-spin"></i> Authenticating...</p>
+        
+        <p class="footer-tagline">Everyone You Need, One Place.</p>
     </div>
 
     <script type="module">
@@ -175,34 +195,43 @@
 
         const loginBtn = document.getElementById('googleLoginBtn');
         const loadingMsg = document.getElementById('loadingMsg');
+        const tagline = document.querySelector('.footer-tagline');
 
         // Check if user is already logged in
         onAuthStateChanged(auth, (user) => {
             if (user) {
-                // User is signed in, redirect immediately
                 window.location.href = 'customer.html';
             }
         });
 
         // Handle Google Login Click
         loginBtn.addEventListener('click', async () => {
+            // Haptic feedback (150ms)
+            if (navigator.vibrate) {
+                navigator.vibrate(150); 
+            }
+
             loginBtn.style.opacity = '0.7';
             loginBtn.style.pointerEvents = 'none';
+            tagline.style.display = 'none'; // Hide tagline to make room for loader
             loadingMsg.style.display = 'block';
 
             try {
-                const result = await signInWithPopup(auth, provider);
-                // Successful login will trigger the onAuthStateChanged listener above, 
-                // but we can also force the redirect here just in case.
+                await signInWithPopup(auth, provider);
                 window.location.href = 'customer.html';
             } catch (error) {
                 console.error("Authentication Error:", error);
-                alert("Failed to sign in: " + error.message);
+                
+                // Only show alert if it's not a user-cancelled popup
+                if (error.code !== 'auth/popup-closed-by-user') {
+                    alert("Failed to sign in: " + error.message);
+                }
                 
                 // Reset button state
                 loginBtn.style.opacity = '1';
                 loginBtn.style.pointerEvents = 'auto';
                 loadingMsg.style.display = 'none';
+                tagline.style.display = 'block';
             }
         });
     </script>
