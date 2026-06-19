@@ -24,7 +24,7 @@
         }
 
         body {
-            /* Soft glowing background mimicking the reference image but with a green tint */
+            /* Soft glowing background */
             background: radial-gradient(circle at top right, #d1fae5 0%, #f3f4f6 50%, #ffffff 100%);
             color: var(--text-dark);
             height: 100vh;
@@ -65,28 +65,24 @@
         .brand-text {
             font-size: 1.5rem;
             font-weight: 800;
-            color: var(--text-dark);
+            color: var(--primary-green); /* PureCall pura single green color me */
             letter-spacing: -0.5px;
         }
 
-        .brand-text span {
-            color: var(--primary-green);
-        }
-
-        /* Typography */
+        /* Typography - Font size reduced here */
         .headline {
-            font-size: 3rem;
+            font-size: 2.2rem; /* Reduced from 3rem to make it look professional */
             font-weight: 800;
-            line-height: 1.1;
-            margin-bottom: 16px;
-            letter-spacing: -1px;
+            line-height: 1.2;
+            margin-bottom: 12px;
+            letter-spacing: -0.5px;
             color: var(--text-dark);
         }
 
         .subheadline {
-            font-size: 1.05rem;
+            font-size: 0.95rem; /* Adjusted for better proportion */
             color: var(--text-gray);
-            line-height: 1.6;
+            line-height: 1.5;
             max-width: 95%;
         }
 
@@ -104,7 +100,7 @@
             background-color: var(--white);
             color: var(--text-dark);
             border: 1px solid var(--border-color);
-            padding: 18px;
+            padding: 16px; /* Slightly reduced padding for a sleeker button */
             border-radius: 12px;
             font-size: 1.05rem;
             font-weight: 700;
@@ -124,13 +120,23 @@
             height: 22px;
         }
 
-        .footer-tagline {
+        /* Footer Tagline Area */
+        .footer-container {
             text-align: center;
-            color: #9ca3af;
-            font-size: 0.9rem;
-            font-weight: 600;
-            margin-top: 20px;
-            letter-spacing: 0.2px;
+            margin-top: 25px;
+        }
+
+        .footer-main {
+            color: var(--text-dark); /* Black color */
+            font-size: 0.95rem;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .footer-sub {
+            color: var(--text-gray); /* Grey for "Made with <3" */
+            font-size: 0.85rem;
+            font-weight: 500;
         }
 
         .loading-text {
@@ -150,7 +156,7 @@
             <div class="logo-box">
                 <i class="fas fa-address-book"></i>
             </div>
-            <div class="brand-text">Pure<span>Call</span></div>
+            <div class="brand-text">PureCall</div>
         </div>
 
         <h1 class="headline">Professional contacts,<br>organized well.</h1>
@@ -169,7 +175,10 @@
         </button>
         <p id="loadingMsg" class="loading-text"><i class="fas fa-spinner fa-spin"></i> Authenticating...</p>
         
-        <p class="footer-tagline">Everyone You Need, One Place.</p>
+        <div class="footer-container" id="footerText">
+            <p class="footer-main">Everyone You Need, One Place.</p>
+            <p class="footer-sub">Made with <span style="color: #ef4444;">❤</span> Under AV</p>
+        </div>
     </div>
 
     <script type="module">
@@ -195,7 +204,7 @@
 
         const loginBtn = document.getElementById('googleLoginBtn');
         const loadingMsg = document.getElementById('loadingMsg');
-        const tagline = document.querySelector('.footer-tagline');
+        const footerText = document.getElementById('footerText');
 
         // Check if user is already logged in
         onAuthStateChanged(auth, (user) => {
@@ -213,7 +222,7 @@
 
             loginBtn.style.opacity = '0.7';
             loginBtn.style.pointerEvents = 'none';
-            tagline.style.display = 'none'; // Hide tagline to make room for loader
+            footerText.style.display = 'none'; // Hide footer text to make room for loader
             loadingMsg.style.display = 'block';
 
             try {
@@ -231,7 +240,7 @@
                 loginBtn.style.opacity = '1';
                 loginBtn.style.pointerEvents = 'auto';
                 loadingMsg.style.display = 'none';
-                tagline.style.display = 'block';
+                footerText.style.display = 'block';
             }
         });
     </script>
