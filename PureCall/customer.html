@@ -1,0 +1,744 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>PureCall - Contacts & Profile</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-green: #059669; 
+            --accent-green: #10b981; 
+            --accent-dark: #047857;  
+            --light-green: #e6f8f1;
+            --white: #ffffff;
+            --bg-color: #f9fafb;
+            --text-dark: #1f2937;
+            --text-gray: #6b7280;
+            --border-color: #f3f4f6;
+            --danger-red: #dc2626; 
+            --danger-light: #fee2e2; 
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; -webkit-tap-highlight-color: transparent; }
+        body { background-color: var(--bg-color); color: var(--text-dark); height: 100vh; overflow: hidden; display: flex; flex-direction: column; transition: background-color 0.3s, color 0.3s; }
+
+        /* Header */
+        header { display: flex; justify-content: space-between; align-items: center; padding: 16px 20px; background: var(--white); z-index: 10; border-bottom: 1px solid var(--border-color); transition: background-color 0.3s, border-color 0.3s; }
+        .icon-btn { background: none; border: none; font-size: 1.4rem; color: var(--text-dark); cursor: pointer; }
+        
+        /* Logo Styles */
+        .logo { font-size: 1.5rem; font-weight: 800; color: var(--primary-green); }
+
+        /* Search Input */
+        .search-container {
+            display: none; 
+            padding: 10px 20px;
+            background: var(--white);
+            border-bottom: 1px solid var(--border-color);
+        }
+        .search-input {
+            width: 100%;
+            padding: 10px 15px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            background: var(--bg-color);
+            color: var(--text-dark);
+            outline: none;
+        }
+
+        /* Main Content Area */
+        main { flex: 1; overflow-y: auto; padding-bottom: 100px; position: relative; }
+        
+        /* Views */
+        .view-section { display: none; padding: 20px; }
+        .view-section.active { display: block; animation: fadeIn 0.3s ease-in-out; }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* Filters */
+        .filters { display: flex; gap: 10px; padding: 0 0 16px 0; overflow-x: auto; scrollbar-width: none; border-bottom: 1px solid var(--border-color); margin-bottom: 15px;}
+        .filters::-webkit-scrollbar { display: none; }
+        .chip { padding: 8px 16px; border-radius: 20px; border: 1px solid var(--border-color); background: var(--white); color: var(--text-gray); font-size: 0.9rem; font-weight: 500; white-space: nowrap; cursor: pointer; transition: background-color 0.3s, border-color 0.3s; }
+        .chip.active { background: var(--light-green); color: var(--primary-green); border-color: var(--light-green); }
+
+        /* Empty State */
+        .empty-state { display: none; flex-direction: column; align-items: center; justify-content: center; text-align: center; margin-top: 40px; }
+        .empty-icon { width: 80px; height: 80px; background: var(--light-green); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 2rem; color: var(--primary-green); margin-bottom: 20px; }
+        .empty-state h2 { font-size: 1.2rem; margin-bottom: 8px; color: var(--text-dark); }
+        .empty-state p { color: var(--text-gray); font-size: 0.95rem; max-width: 250px; }
+
+        /* Customer List */
+        .customer-list { display: flex; flex-direction: column; gap: 12px; }
+        .customer-item { background: var(--white); padding: 16px; border-radius: 12px; border: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.02); transition: background-color 0.3s, border-color 0.3s; }
+        .customer-info h3 { font-size: 1.1rem; margin-bottom: 4px; color: var(--text-dark); }
+        
+        .meta-info { display: flex; flex-direction: column; gap: 4px; margin-top: 4px; }
+        .phone-text { font-size: 0.9rem; color: var(--text-gray); font-weight: 500; }
+        .category-badge { font-size: 0.75rem; color: var(--primary-green); display: inline-block; background: var(--light-green); padding: 3px 8px; border-radius: 6px; font-weight: 600; width: fit-content;}
+
+        /* Action Buttons (Call & Delete) */
+        .action-buttons { display: flex; gap: 8px; align-items: center; }
+        .call-btn { background-color: var(--light-green); color: var(--primary-green); width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; text-decoration: none; font-size: 1.1rem; }
+        .delete-btn { background-color: var(--danger-light); color: var(--danger-red); width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; border: none; cursor: pointer; transition: 0.2s; }
+        .delete-btn:active { background-color: var(--danger-red); color: var(--white); }
+
+        /* Crafted Footer (Home) */
+        .crafted-footer { text-align: center; margin-top: 40px; padding: 20px 0; border-top: 1px solid var(--border-color); }
+        .crafted-footer h2 { font-size: 1.4rem; font-weight: 800; color: #9ca3af; margin-bottom: 12px; line-height: 1.2; letter-spacing: -0.5px;}
+        .crafted-footer p { font-size: 0.85rem; color: #9ca3af; margin-bottom: 4px; font-weight: 500;}
+
+        /* Profile View Styles */
+        .profile-header { display: flex; justify-content: space-between; align-items: center; padding: 20px; background: var(--white); border-radius: 16px; border: 1px solid var(--border-color); margin-bottom: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.02); }
+        .profile-text-area h2 { font-size: 1.4rem; color: var(--text-dark); margin-bottom: 0;}
+        .profile-text-area h2 span { font-weight: bold; }
+        
+        .profile-pic { width: 65px; height: 65px; border-radius: 50%; background: linear-gradient(135deg, var(--accent-green) 0%, var(--accent-dark) 100%); color: var(--white); display: flex; align-items: center; justify-content: center; font-size: 1.8rem; font-weight: bold; overflow: hidden; box-shadow: 0 4px 10px rgba(5, 150, 105, 0.2); }
+        .profile-pic img { width: 100%; height: 100%; object-fit: cover; }
+
+        /* Donation Section */
+        .donation-card { background: var(--white); border-radius: 16px; border: 1px solid var(--border-color); padding: 20px; margin-bottom: 20px; text-align: center; }
+        .donation-card h3 { font-size: 1.1rem; margin-bottom: 10px; color: var(--primary-green); }
+        .donation-card p { font-size: 0.85rem; color: var(--text-gray); margin-bottom: 15px; line-height: 1.5; }
+        .qr-box { background: var(--bg-color); padding: 15px; border-radius: 12px; display: inline-block; margin-bottom: 15px; border: 1px solid var(--border-color); }
+        .qr-box img { width: 150px; height: 150px; object-fit: contain; }
+        
+        .upi-id { background: var(--light-green); color: var(--accent-dark); padding: 10px 20px; border-radius: 8px; font-weight: 700; font-size: 1rem; display: inline-block; border: none; }
+        
+        .btn-founder { display: inline-block; margin-top: 15px; padding: 12px 20px; background: var(--white); color: var(--text-dark); border: 1px solid var(--border-color); border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 0.9rem; transition: background 0.3s; width: 100%; }
+        .btn-founder i { color: var(--primary-green); margin-right: 8px; }
+        .btn-founder:active { background: var(--bg-color); }
+
+        .settings-list { background: var(--white); border-radius: 16px; border: 1px solid var(--border-color); overflow: hidden; margin-bottom: 20px; transition: background-color 0.3s, border-color 0.3s; }
+        .settings-item { display: flex; justify-content: space-between; align-items: center; padding: 16px 20px; border-bottom: 1px solid var(--border-color); cursor: pointer; text-decoration: none; }
+        .settings-item:last-child { border-bottom: none; }
+        .settings-item-left { display: flex; align-items: center; gap: 15px; color: var(--text-dark); font-weight: 500; }
+        .settings-item-left i { color: var(--primary-green); font-size: 1.2rem; width: 24px; text-align: center; }
+        .settings-item i.fa-chevron-right { color: #d1d5db; }
+
+        .btn-logout { width: 100%; background: var(--danger-light); color: var(--danger-red); border: 1px solid #fee2e2; padding: 16px; border-radius: 12px; font-size: 1rem; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; transition: 0.2s; margin-bottom: 40px; }
+        .btn-logout:active { background: #fee2e2; }
+
+        /* Toggle Switch */
+        .switch { position: relative; display: inline-block; width: 44px; height: 24px; }
+        .switch input { opacity: 0; width: 0; height: 0; }
+        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; transition: .4s; border-radius: 24px; }
+        .slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 3px; bottom: 3px; background-color: white; transition: .4s; border-radius: 50%; }
+        input:checked + .slider { background-color: var(--primary-green); }
+        input:checked + .slider:before { transform: translateX(20px); }
+
+        /* Bottom Navigation */
+        .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: var(--white); display: flex; justify-content: space-around; align-items: center; padding: 12px 0 20px 0; box-shadow: 0 -2px 10px rgba(0,0,0,0.05); z-index: 50; border-top: 1px solid var(--border-color); transition: background-color 0.3s, border-color 0.3s; }
+        .nav-item { display: flex; flex-direction: column; align-items: center; color: var(--text-gray); text-decoration: none; font-size: 0.75rem; gap: 4px; width: 30%; cursor: pointer; padding: 8px 0; }
+        .nav-item.active { color: var(--primary-green); }
+        .nav-item i { font-size: 1.3rem; margin-bottom: 2px; }
+        
+        .fab-container { width: 30%; display: flex; justify-content: center; }
+        .fab { background: var(--primary-green); color: #ffffff; width: 56px; height: 56px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; border: none; box-shadow: 0 4px 10px rgba(5, 150, 105, 0.4); transform: translateY(-20px); cursor: pointer; z-index: 51; }
+        .fab.hidden { display: none; }
+
+        /* Sidebar & Modals */
+        .sidebar-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 99; display: none; opacity: 0; transition: opacity 0.3s; }
+        .sidebar { position: fixed; top: 0; left: -300px; width: 280px; height: 100%; background: var(--white); z-index: 100; transition: left 0.3s ease, background-color 0.3s; box-shadow: 2px 0 10px rgba(0,0,0,0.1); display: flex; flex-direction: column; }
+        .sidebar-header { padding: 30px 20px; display: flex; justify-content: space-between; align-items: center; }
+        
+        .sidebar-close { background: none; border: none; font-size: 1.2rem; cursor: pointer; color: var(--text-gray); background: var(--bg-color); width: 32px; height: 32px; border-radius: 50%; display: flex; justify-content: center; align-items: center;}
+
+        .sidebar-links { padding: 20px 0; list-style: none; flex: 1; }
+        .sidebar-links li a { display: flex; align-items: center; padding: 18px 20px; color: var(--text-dark); text-decoration: none; font-size: 1rem; font-weight: 500; gap: 15px; }
+        .sidebar-links li a i { color: var(--text-gray); width: 20px; text-align: center; font-size: 1.1rem;}
+        
+        .sidebar-footer { padding: 20px; text-align: center; border-top: 1px solid var(--border-color); }
+        .sidebar-footer-title { font-weight: bold; margin-bottom: 5px; font-size: 1.1rem; color: var(--primary-green); }
+        .sidebar-footer-sub { color: var(--text-gray); font-size: 0.8rem; font-weight: 500; }
+
+        .modal { position: fixed; top: 100%; left: 0; width: 100%; height: 100%; background: var(--bg-color); z-index: 200; transition: top 0.3s ease-in-out, background-color 0.3s; display: flex; flex-direction: column; }
+        .modal.active { top: 0; }
+        .modal-header { display: flex; align-items: center; padding: 20px; background: var(--white); box-shadow: 0 2px 4px rgba(0,0,0,0.05); transition: background-color 0.3s; }
+        .modal-header h2 { flex: 1; text-align: center; font-size: 1.2rem; color: var(--text-dark); }
+        .modal-content { padding: 20px; flex: 1; overflow-y: auto; }
+
+        .form-group { margin-bottom: 20px; }
+        .form-group label { display: block; margin-bottom: 8px; color: var(--text-gray); font-size: 0.9rem;}
+        .form-group input, .form-group select { width: 100%; padding: 14px; border: 1px solid #e5e7eb; border-radius: 8px; font-size: 1rem; outline: none; background: var(--white); color: var(--text-dark); transition: background-color 0.3s, border-color 0.3s, color 0.3s; }
+        .form-group select { appearance: none; background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e"); background-repeat: no-repeat; background-position: right 1rem center; background-size: 1em; }
+        .btn-submit { width: 100%; background: var(--primary-green); color: #ffffff; padding: 15px; border: none; border-radius: 8px; font-size: 1rem; font-weight: bold; cursor: pointer; transition: background 0.3s; display: flex; justify-content: center; align-items: center; gap: 8px; }
+        
+    </style>
+</head>
+<body>
+
+    <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="logo">PureCall</div>
+            <button class="sidebar-close" onclick="toggleSidebar()"><i class="fas fa-times"></i></button>
+        </div>
+        <ul class="sidebar-links">
+            <li><a href="https://abhivision.in" target="_blank"><i class="fas fa-gift"></i> AV Gift Frames</a></li>
+            <li><a href="https://pureorder.in" target="_blank"><i class="fas fa-shopping-bag"></i> PureOrder</a></li>
+            <li><a href="#" onclick="switchTab('settings'); toggleSidebar();"><i class="fas fa-hand-holding-heart"></i> Donation</a></li>
+            <li><a href="#" onclick="openModal('helpModal'); toggleSidebar();"><i class="far fa-question-circle"></i> Help & Support</a></li>
+            <li><a href="#" onclick="openModal('aboutModal'); toggleSidebar();"><i class="fas fa-info-circle"></i> About Us</a></li>
+        </ul>
+        <div class="sidebar-footer">
+            <div class="sidebar-footer-title">PureCall</div>
+            <div class="sidebar-footer-sub">Founded by Abhishek Sahoo</div>
+        </div>
+    </div>
+
+    <header>
+        <button class="icon-btn" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
+        <div class="logo">PureCall</div>
+        <button class="icon-btn" id="searchBtnIcon" onclick="toggleSearch()"><i class="fas fa-search"></i></button>
+    </header>
+    
+    <div class="search-container" id="searchContainer">
+        <input type="text" class="search-input" id="searchInput" placeholder="Search name, category, or number...">
+    </div>
+
+    <main>
+        
+        <section id="homeView" class="view-section active">
+            <div class="filters" id="filterContainer">
+                <div class="chip active" onclick="setFilter('All', this)">All</div>
+            </div>
+
+            <div class="empty-state" id="emptyState">
+                <div class="empty-icon"><i class="fas fa-phone"></i></div>
+                <h2>No contacts found</h2>
+                <p>Tap the + button below to add your first contact.</p>
+            </div>
+
+            <div class="customer-list" id="customerList"></div>
+
+            <div class="crafted-footer" id="craftedFooter" style="display: none;">
+                <h2>Everyone You Need.<br>One Place</h2>
+                <p>Crafted with <span style="color: #ef4444;">❤</span> under AbhiVision</p>
+                <p>Founded by Abhishek Sahoo</p>
+            </div>
+        </section>
+
+        <section id="settingsView" class="view-section">
+            <div class="profile-header">
+                <div class="profile-text-area">
+                    <h2>Hello, <span id="profileNameSpan">User</span></h2>
+                </div>
+                <div class="profile-pic" id="profilePicBox">
+                    <i class="fas fa-user"></i>
+                </div>
+            </div>
+
+            <div class="donation-card">
+                <h3 style="color: var(--primary-green);">Support PureCall</h3>
+                <p>PureCall is totally free and we didn't earn a single percent profit from this app. To keep this app working, you can donate us.</p>
+                
+                <div class="qr-box">
+                    <img src="donation-qr.jpg" alt="Donation QR Code" 
+                         onerror="this.onerror=null; this.src='https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=upi://pay?pa=techie.abhishek@fam%26pn=PureCall%26cu=INR';">
+                </div>
+                <div>
+                    <div class="upi-id">techie.abhishek@fam</div>
+                </div>
+                
+                <div>
+                    <a href="tel:+917681807203" class="btn-founder"><i class="fas fa-phone"></i> Contact PureCall Founder</a>
+                </div>
+            </div>
+
+            <div class="settings-list">
+                <div class="settings-item">
+                    <div class="settings-item-left">
+                        <i class="fas fa-moon"></i> Dark Mode
+                    </div>
+                    <label class="switch">
+                        <input type="checkbox" id="darkModeToggle">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+                <a href="#" class="settings-item" id="exportBtn">
+                    <div class="settings-item-left">
+                        <i class="fas fa-file-export"></i> Export Contacts
+                    </div>
+                    <i class="fas fa-chevron-right"></i>
+                </a>
+            </div>
+
+            <button class="btn-logout" id="logoutBtn">
+                <i class="fas fa-sign-out-alt"></i> Sign Out
+            </button>
+        </section>
+
+    </main>
+
+    <nav class="bottom-nav">
+        <a href="javascript:void(0)" class="nav-item active" id="navHome" onclick="switchTab('home')">
+            <i class="fas fa-home"></i>
+            <span>Home</span>
+        </a>
+        <div class="fab-container">
+            <button class="fab" id="fabBtn" onclick="openModal('addModal')">
+                <i class="fas fa-plus"></i>
+            </button>
+        </div>
+        <a href="javascript:void(0)" class="nav-item" id="navSettings" onclick="switchTab('settings')">
+            <i class="far fa-user-circle"></i>
+            <span>Profile</span>
+        </a>
+    </nav>
+
+    <div class="modal" id="addModal">
+        <div class="modal-header">
+            <button class="icon-btn" onclick="closeModal('addModal')"><i class="fas fa-arrow-left"></i></button>
+            <h2>Add Contact</h2>
+            <div style="width: 24px;"></div>
+        </div>
+        <div class="modal-content">
+            <form id="addCustomerForm">
+                <div class="form-group">
+                    <label>Full Name</label>
+                    <input type="text" id="custName" placeholder="e.g. Rahul Sharma" required>
+                </div>
+                
+                <div class="form-group">
+                    <label>Category</label>
+                    <select id="custCategorySelect" required>
+                        <option value="" disabled selected>Select a category</option>
+                        <option value="Plumber">Plumber</option>
+                        <option value="Electrician">Electrician</option>
+                        <option value="Carpenter">Carpenter</option>
+                        <option value="Construction">Construction</option>
+                        <option value="custom" style="color: var(--primary-green); font-weight: bold;">+ Add New Category</option>
+                    </select>
+                    <input type="text" id="customCategoryInput" placeholder="Type new category name" style="display: none; margin-top: 10px;">
+                </div>
+
+                <div class="form-group">
+                    <label>Phone Number</label>
+                    <input type="tel" id="custPhone" placeholder="e.g. +91 9876543210" required>
+                </div>
+                <button type="submit" class="btn-submit" id="saveSubmitBtn">Save Contact</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="modal" id="helpModal">
+        <div class="modal-header">
+            <button class="icon-btn" onclick="closeModal('helpModal')"><i class="fas fa-arrow-left"></i></button>
+            <h2>Help & Support</h2>
+            <div style="width: 24px;"></div>
+        </div>
+        <div class="modal-content">
+            <div style="text-align: center; margin-top: 20px; margin-bottom: 30px;">
+                 <h2 style="font-size: 1.8rem; margin-bottom: 10px; color: var(--primary-green);">PureCall</h2>
+            </div>
+            <div style="background: var(--white); border-radius: 16px; border: 1px solid var(--border-color); padding: 20px; text-align: center; box-shadow: 0 4px 15px rgba(0,0,0,0.02);">
+                <i class="fas fa-headphones" style="font-size: 2.5rem; color: var(--primary-green); margin-bottom: 15px;"></i>
+                <h3 style="font-size: 1.2rem; margin-bottom: 10px; color: var(--text-dark);">We're Here to Help!</h3>
+                <p style="font-size: 0.9rem; color: var(--text-gray); margin-bottom: 20px; line-height: 1.5;">Facing an issue with the app or need assistance navigating your contacts? Reach out to our dedicated support team directly.</p>
+                <a href="mailto:contact.abhivision@gmail.com" style="display: block; width: 100%; background: var(--primary-green); color: #ffffff; padding: 14px; border-radius: 8px; text-decoration: none; font-weight: bold;"><i class="fas fa-envelope" style="margin-right:8px;"></i> Contact Support</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="aboutModal">
+        <div class="modal-header">
+            <button class="icon-btn" onclick="closeModal('aboutModal')"><i class="fas fa-arrow-left"></i></button>
+            <h2>About Us</h2>
+            <div style="width: 24px;"></div>
+        </div>
+        <div class="modal-content" style="padding: 15px;">
+            <div style="text-align: center; margin-bottom: 15px;">
+                <h1 style="color: var(--primary-green); font-size: 1.8rem; margin-bottom: 5px;">PureCall</h1>
+                <p style="color: var(--text-gray); font-size: 0.95rem; font-weight: 500;">Your Professional Network, Simplified.</p>
+            </div>
+            
+            <div style="background: var(--white); border-radius: 12px; padding: 20px 15px; border: 1px solid var(--border-color); margin-bottom: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.02);">
+                <p style="color: var(--text-gray); line-height: 1.6; font-size: 0.95rem; text-align: center; margin: 0 auto;">
+                    PureCall was designed with a simple but powerful vision: to keep your most important professional contacts organized, easily accessible, and completely private.
+                </p>
+            </div>
+
+            <div style="background: var(--white); border-radius: 12px; padding: 15px; border: 1px solid var(--border-color); box-shadow: 0 2px 8px rgba(0,0,0,0.02);">
+                <div style="display: flex; align-items: center; margin-bottom: 15px;">
+                    <i class="fas fa-sitemap" style="color: var(--primary-green); width: 35px; font-size: 1.2rem; text-align: center;"></i>
+                    <div>
+                        <strong style="color: var(--text-dark); font-size: 0.95rem; display: block; margin-bottom: 2px;">Stay Organized</strong>
+                        <div style="color: var(--text-gray); font-size: 0.85rem;">Custom categories for quick access</div>
+                    </div>
+                </div>
+                <div style="display: flex; align-items: center; margin-bottom: 15px;">
+                    <i class="fas fa-shield-alt" style="color: var(--primary-green); width: 35px; font-size: 1.2rem; text-align: center;"></i>
+                    <div>
+                        <strong style="color: var(--text-dark); font-size: 0.95rem; display: block; margin-bottom: 2px;">Private & Secure</strong>
+                        <div style="color: var(--text-gray); font-size: 0.85rem;">Securely synced for your convenience</div>
+                    </div>
+                </div>
+                <div style="display: flex; align-items: center;">
+                    <i class="fas fa-hand-pointer" style="color: var(--primary-green); width: 35px; font-size: 1.2rem; text-align: center;"></i>
+                    <div>
+                        <strong style="color: var(--text-dark); font-size: 0.95rem; display: block; margin-bottom: 2px;">One Tap Away</strong>
+                        <div style="color: var(--text-gray); font-size: 0.85rem;">Connect instantly with everyone you need</div>
+                    </div>
+                </div>
+            </div>
+
+            <div style="margin-top: 20px; text-align: center; margin-bottom: 10px;">
+                <div style="color: var(--text-dark); font-weight: bold; font-size: 1rem;">Developed by AbhiVision</div>
+                <div style="color: var(--text-gray); font-size: 0.85rem; margin-top: 4px;">Founded by Abhishek Sahoo</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        window.allContactsData = [];
+        let currentFilter = 'all'; 
+        let userCategories = new Set(); 
+
+        // === Navigation Logic ===
+        function switchTab(tabName) {
+            document.getElementById('homeView').classList.remove('active');
+            document.getElementById('settingsView').classList.remove('active');
+            document.getElementById('navHome').classList.remove('active');
+            document.getElementById('navSettings').classList.remove('active');
+
+            const searchBtnIcon = document.getElementById('searchBtnIcon');
+            const searchContainer = document.getElementById('searchContainer');
+            const fabBtn = document.getElementById('fabBtn');
+
+            if (tabName === 'home') {
+                document.getElementById('homeView').classList.add('active');
+                document.getElementById('navHome').classList.add('active');
+                searchBtnIcon.style.visibility = 'visible';
+                fabBtn.classList.remove('hidden');
+            } else if (tabName === 'settings') {
+                document.getElementById('settingsView').classList.add('active');
+                document.getElementById('navSettings').classList.add('active');
+                searchBtnIcon.style.visibility = 'hidden'; 
+                searchContainer.style.display = 'none'; 
+                fabBtn.classList.add('hidden'); 
+            }
+        }
+
+        // === Live Search Logic (Name, Category, and Phone Number) ===
+        function toggleSearch() {
+            const container = document.getElementById('searchContainer');
+            if (container.style.display === 'block') {
+                container.style.display = 'none';
+                document.getElementById('searchInput').value = '';
+                filterContactsDOM(); 
+            } else {
+                container.style.display = 'block';
+                document.getElementById('searchInput').focus();
+            }
+        }
+
+        document.getElementById('searchInput').addEventListener('input', function(e) {
+            const searchTerm = e.target.value.toLowerCase().trim();
+            const items = document.querySelectorAll('.customer-item');
+            let visibleCount = 0;
+
+            items.forEach(item => {
+                const name = item.querySelector('h3').innerText.toLowerCase();
+                const profession = item.getAttribute('data-profession').toLowerCase();
+                const phone = item.getAttribute('data-phone').toLowerCase();
+                
+                // Checks if search term matches Name OR Category OR Phone Number
+                if (name.includes(searchTerm) || profession.includes(searchTerm) || phone.includes(searchTerm)) {
+                    // Also respect the active category chip filter
+                    if (currentFilter === 'all' || profession === currentFilter) {
+                        item.style.display = 'flex';
+                        visibleCount++;
+                    } else {
+                        item.style.display = 'none';
+                    }
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+            document.getElementById('emptyState').style.display = visibleCount === 0 ? 'flex' : 'none';
+        });
+
+        // === Dark Mode ===
+        const darkModeToggle = document.getElementById('darkModeToggle');
+        darkModeToggle.addEventListener('change', (e) => {
+            if(e.target.checked) {
+                document.documentElement.style.setProperty('--bg-color', '#111827');
+                document.documentElement.style.setProperty('--white', '#1f2937');
+                document.documentElement.style.setProperty('--text-dark', '#f9fafb');
+                document.documentElement.style.setProperty('--border-color', '#374151');
+                document.documentElement.style.setProperty('--light-green', '#064e3b');
+                document.documentElement.style.setProperty('--text-gray', '#9ca3af');
+                document.documentElement.style.setProperty('--danger-light', '#7f1d1d');
+            } else {
+                document.documentElement.style.setProperty('--bg-color', '#f9fafb');
+                document.documentElement.style.setProperty('--white', '#ffffff');
+                document.documentElement.style.setProperty('--text-dark', '#1f2937');
+                document.documentElement.style.setProperty('--border-color', '#f3f4f6');
+                document.documentElement.style.setProperty('--light-green', '#e6f8f1');
+                document.documentElement.style.setProperty('--text-gray', '#6b7280');
+                document.documentElement.style.setProperty('--danger-light', '#fee2e2');
+            }
+        });
+
+        // Sidebar & Modals
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('sidebarOverlay');
+            if (sidebar.style.left === '0px') {
+                sidebar.style.left = '-300px';
+                overlay.style.opacity = '0';
+                setTimeout(() => overlay.style.display = 'none', 300);
+            } else {
+                overlay.style.display = 'block';
+                setTimeout(() => overlay.style.opacity = '1', 10);
+                sidebar.style.left = '0px';
+            }
+        }
+
+        function openModal(id) { document.getElementById(id).classList.add('active'); }
+        function closeModal(id) { 
+            document.getElementById(id).classList.remove('active'); 
+            if(id === 'addModal') {
+                document.getElementById('addCustomerForm').reset();
+                document.getElementById('customCategoryInput').style.display = 'none';
+                document.getElementById('customCategoryInput').required = false;
+            }
+        }
+
+        document.getElementById('custCategorySelect').addEventListener('change', function() {
+            const customInput = document.getElementById('customCategoryInput');
+            if(this.value === 'custom') {
+                customInput.style.display = 'block';
+                customInput.required = true;
+                customInput.focus();
+            } else {
+                customInput.style.display = 'none';
+                customInput.required = false;
+            }
+        });
+
+        // Category Filter Logic
+        function setFilter(filterType, element) {
+            currentFilter = filterType.toLowerCase();
+            document.querySelectorAll('.chip').forEach(el => el.classList.remove('active'));
+            if(element) element.classList.add('active');
+            
+            // Trigger search to apply filter alongside existing search text
+            filterContactsDOM(); 
+        }
+
+        function filterContactsDOM() {
+            const searchInput = document.getElementById('searchInput');
+            searchInput.dispatchEvent(new Event('input')); 
+        }
+
+        function renderDynamicChips() {
+            const filterContainer = document.getElementById('filterContainer');
+            let html = `<div class="chip ${currentFilter === 'all' ? 'active' : ''}" onclick="setFilter('All', this)">All</div>`;
+            Array.from(userCategories).sort().forEach(category => {
+                const isActive = currentFilter === category.toLowerCase() ? 'active' : '';
+                html += `<div class="chip ${isActive}" onclick="setFilter('${category}', this)">${category}</div>`;
+            });
+            filterContainer.innerHTML = html;
+        }
+    </script>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getFirestore, collection, addDoc, onSnapshot, query, where, doc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyCbRjKDiMFagCSH6LE-ZqpyeiRnIf0onvE",
+            authDomain: "purecall.firebaseapp.com",
+            projectId: "purecall",
+            storageBucket: "purecall.firebasestorage.app",
+            messagingSenderId: "1062741652728",
+            appId: "1:1062741652728:web:f8792621a87a14bbf6370d"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        const auth = getAuth(app);
+        
+        let currentUser = null;
+
+        // Delete function
+        window.deleteContact = async (contactId) => {
+            if (confirm("Delete this contact?")) {
+                if (navigator.vibrate) {
+                    navigator.vibrate(150); 
+                }
+                try {
+                    await deleteDoc(doc(db, "customers", contactId));
+                } catch (error) {
+                    console.error("Error deleting contact: ", error);
+                    alert("Failed to delete contact.");
+                }
+            }
+        };
+
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                currentUser = user;
+                
+                let firstName = user.displayName ? user.displayName.split(' ')[0] : "User";
+                document.getElementById('profileNameSpan').innerText = firstName;
+                
+                // Removed email injection per request
+                
+                if(user.photoURL) {
+                    document.getElementById('profilePicBox').innerHTML = `<img src="${user.photoURL}" alt="Profile">`;
+                } else {
+                    document.getElementById('profilePicBox').innerHTML = firstName.charAt(0).toUpperCase();
+                }
+
+                const q = query(collection(db, "customers"), where("userId", "==", user.uid));
+                
+                onSnapshot(q, (snapshot) => {
+                    const customerListEl = document.getElementById('customerList');
+                    const emptyStateEl = document.getElementById('emptyState');
+                    const footer = document.getElementById('craftedFooter');
+                    
+                    customerListEl.innerHTML = ''; 
+                    window.allContactsData = []; 
+                    userCategories.clear(); 
+                    
+                    let docs = [];
+                    snapshot.forEach(doc => docs.push({ id: doc.id, ...doc.data() }));
+                    docs.sort((a, b) => b.createdAt - a.createdAt);
+
+                    if (docs.length === 0) {
+                        emptyStateEl.style.display = 'flex';
+                        footer.style.display = 'none'; 
+                        renderDynamicChips(); 
+                    } else {
+                        emptyStateEl.style.display = 'none';
+                        footer.style.display = 'block'; 
+                        docs.forEach((customer) => {
+                            const profName = customer.profession || 'Other';
+                            const phoneNum = customer.phone || 'N/A';
+                            userCategories.add(profName);
+
+                            window.allContactsData.push({
+                                name: customer.name || 'N/A',
+                                profession: profName,
+                                phone: phoneNum
+                            });
+
+                            const customerDiv = document.createElement('div');
+                            customerDiv.className = 'customer-item';
+                            customerDiv.setAttribute('data-profession', profName);
+                            // Added data-phone attribute for search
+                            customerDiv.setAttribute('data-phone', phoneNum);
+                            
+                            // Updated Card Layout with Phone Number
+                            customerDiv.innerHTML = `
+                                <div class="customer-info">
+                                    <h3>${customer.name}</h3>
+                                    <div class="meta-info">
+                                        <span class="phone-text">${phoneNum}</span>
+                                        <span class="category-badge"><i class="fas fa-tag" style="margin-right:4px;"></i>${profName}</span>
+                                    </div>
+                                </div>
+                                <div class="action-buttons">
+                                    <button class="delete-btn" onclick="deleteContact('${customer.id}')" title="Delete Contact">
+                                        <i class="fas fa-trash-alt"></i>
+                                    </button>
+                                    <a href="tel:${customer.phone}" class="call-btn" title="Call">
+                                        <i class="fas fa-phone"></i>
+                                    </a>
+                                </div>
+                            `;
+                            customerListEl.appendChild(customerDiv);
+                        });
+                        
+                        renderDynamicChips(); 
+                        filterContactsDOM();
+                    }
+                });
+
+            } else {
+                window.location.href = 'index.html';
+            }
+        });
+
+        document.getElementById('logoutBtn').addEventListener('click', () => {
+            signOut(auth).then(() => {
+                window.location.href = 'index.html';
+            });
+        });
+
+        const form = document.getElementById('addCustomerForm');
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            if(!currentUser) return;
+
+            const submitBtn = document.getElementById('saveSubmitBtn');
+            
+            // 1. Phone Vibrate
+            if (navigator.vibrate) {
+                navigator.vibrate(150); 
+            }
+            
+            // 2. Turant Saved text and green color feedback
+            submitBtn.innerHTML = "<i class='fas fa-check'></i> Saved!";
+            submitBtn.style.background = "var(--primary-green)"; 
+            submitBtn.style.pointerEvents = "none"; 
+
+            let finalCategory = document.getElementById('custCategorySelect').value;
+            if (finalCategory === 'custom') {
+                finalCategory = document.getElementById('customCategoryInput').value.trim();
+                finalCategory = finalCategory.charAt(0).toUpperCase() + finalCategory.slice(1);
+            }
+
+            try {
+                addDoc(collection(db, "customers"), {
+                    userId: currentUser.uid, 
+                    name: document.getElementById('custName').value,
+                    profession: finalCategory,
+                    phone: document.getElementById('custPhone').value,
+                    createdAt: new Date()
+                });
+            } catch (error) {
+                console.error("Firebase error", error);
+            }
+
+            // 3. Reset
+            setTimeout(() => {
+                form.reset();
+                closeModal('addModal');
+                switchTab('home');
+                
+                submitBtn.innerText = "Save Contact";
+                submitBtn.style.background = "";
+                submitBtn.style.pointerEvents = "auto";
+            }, 600);
+        });
+
+        document.getElementById('exportBtn').addEventListener('click', (e) => {
+            e.preventDefault();
+            if (!window.allContactsData || window.allContactsData.length === 0) {
+                alert("No contacts to export!"); return;
+            }
+            let csvContent = "Name,Category,Phone Number\n";
+            window.allContactsData.forEach(item => {
+                let cleanName = item.name.replace(/"/g, '""');
+                let cleanProf = item.profession.replace(/"/g, '""');
+                let cleanPhone = item.phone.replace(/"/g, '""');
+                csvContent += `"${cleanName}","${cleanProf}","${cleanPhone}"\n`;
+            });
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const trackingLink = document.createElement('a');
+            trackingLink.setAttribute('href', url);
+            trackingLink.setAttribute('download', 'PureCall_Contacts.csv');
+            trackingLink.style.visibility = 'hidden';
+            document.body.appendChild(trackingLink);
+            trackingLink.click();
+            document.body.removeChild(trackingLink);
+        });
+    </script>
+</body>
+</html>
