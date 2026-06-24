@@ -3,246 +3,106 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PureCall - Login</title>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <title>PureCall Discontinued</title>
     <style>
-        :root {
-            --primary-green: #059669; 
-            --dark-green: #047857;
-            --white: #ffffff;
-            --text-dark: #111827;
-            --text-gray: #6b7280;
-            --border-color: #e5e7eb;
-        }
-
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            -webkit-tap-highlight-color: transparent;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
         }
 
         body {
-            /* Soft glowing background */
-            background: radial-gradient(circle at top right, #d1fae5 0%, #f3f4f6 50%, #ffffff 100%);
-            color: var(--text-dark);
-            height: 100vh;
+            background-color: #1c1c1c;
+            color: #ffffff;
             display: flex;
-            flex-direction: column;
-        }
-
-        /* Top content area pushes down the main text */
-        .content-area {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            justify-content: flex-end;
-            padding: 0 24px 30px 24px;
-        }
-
-        /* Brand / Logo styling */
-        .brand-header {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            margin-bottom: 24px;
-        }
-
-        .logo-box {
-            width: 46px;
-            height: 46px;
-            background: var(--white);
-            border-radius: 14px;
-            display: flex;
-            align-items: center;
             justify-content: center;
-            font-size: 1.4rem;
-            color: var(--primary-green);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.06);
-        }
-
-        .brand-text {
-            font-size: 1.5rem;
-            font-weight: 800;
-            color: var(--primary-green); /* PureCall pura single green color me */
-            letter-spacing: -0.5px;
-        }
-
-        /* Typography - Font size reduced here */
-        .headline {
-            font-size: 2.2rem; /* Reduced from 3rem to make it look professional */
-            font-weight: 800;
-            line-height: 1.2;
-            margin-bottom: 12px;
-            letter-spacing: -0.5px;
-            color: var(--text-dark);
-        }
-
-        .subheadline {
-            font-size: 0.95rem; /* Adjusted for better proportion */
-            color: var(--text-gray);
-            line-height: 1.5;
-            max-width: 95%;
-        }
-
-        /* Action Area (Bottom) */
-        .action-area {
-            padding: 0 24px 40px 24px;
-            background: transparent;
-        }
-
-        .google-btn {
-            display: flex;
             align-items: center;
-            justify-content: center;
-            width: 100%;
-            background-color: var(--white);
-            color: var(--text-dark);
-            border: 1px solid var(--border-color);
-            padding: 16px; /* Slightly reduced padding for a sleeker button */
-            border-radius: 12px;
-            font-size: 1.05rem;
-            font-weight: 700;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            gap: 12px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.03);
-        }
-
-        .google-btn:active {
-            transform: scale(0.98);
-            background-color: #f9fafb;
-        }
-
-        .google-icon {
-            width: 22px;
-            height: 22px;
-        }
-
-        /* Footer Tagline Area */
-        .footer-container {
+            min-height: 100vh;
+            padding: 24px;
             text-align: center;
-            margin-top: 25px;
         }
 
-        .footer-main {
-            color: var(--text-dark); /* Black color */
-            font-size: 0.95rem;
-            font-weight: 700;
-            margin-bottom: 4px;
+        .notice-card {
+            max-width: 560px;
+            background: rgba(255, 255, 255, 0.03);
+            padding: 48px 32px;
+            border-radius: 16px;
+            border-top: 4px solid #ffc107;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(10px);
         }
 
-        .footer-sub {
-            color: var(--text-gray); /* Grey for "Made with <3" */
-            font-size: 0.85rem;
-            font-weight: 500;
-        }
-
-        .loading-text {
-            display: none;
-            text-align: center;
-            color: var(--primary-green);
-            margin-top: 15px;
-            font-size: 0.95rem;
+        h1 {
+            color: #ffc107;
+            font-size: 24px;
             font-weight: 600;
+            margin-bottom: 24px;
+            letter-spacing: 0.5px;
+        }
+
+        p {
+            font-size: 16px;
+            line-height: 1.7;
+            color: #d1d1d1;
+            margin-bottom: 32px;
+        }
+
+        .signature {
+            font-size: 16px;
+            color: #ffffff;
+            margin-bottom: 40px;
+            line-height: 1.5;
+        }
+
+        .signature span {
+            display: block;
+            margin-top: 12px;
+            font-style: italic;
+            color: #ffc107;
+        }
+
+        .footer-link {
+            display: inline-block;
+            color: #888888;
+            text-decoration: none;
+            font-size: 14px;
+            letter-spacing: 0.5px;
+            transition: color 0.3s ease;
+        }
+
+        .footer-link:hover {
+            color: #ffc107;
+        }
+
+        /* Mobile Adjustments */
+        @media (max-width: 480px) {
+            .notice-card {
+                padding: 32px 20px;
+            }
+            h1 {
+                font-size: 22px;
+            }
+            p {
+                font-size: 15px;
+            }
         }
     </style>
 </head>
 <body>
 
-    <div class="content-area">
-        <div class="brand-header">
-            <div class="logo-box">
-                <i class="fas fa-address-book"></i>
-            </div>
-            <div class="brand-text">PureCall</div>
-        </div>
-
-        <h1 class="headline">Professional contacts,<br>organized well.</h1>
-        <p class="subheadline">Store and access your essential professional network. Securely synced right to your phone.</p>
-    </div>
-
-    <div class="action-area">
-        <button id="googleLoginBtn" class="google-btn">
-            <svg class="google-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">
-                <path fill="#FFC107" d="M43.611,20.083H42V20H24v8h11.303c-1.649,4.657-6.08,8-11.303,8c-6.627,0-12-5.373-12-12c0-6.627,5.373-12,12-12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C12.955,4,4,12.955,4,24c0,11.045,8.955,20,20,20c11.045,0,20-8.955,20-20C44,22.659,43.862,21.35,43.611,20.083z"/>
-                <path fill="#FF3D00" d="M6.306,14.691l6.571,4.819C14.655,15.108,18.961,12,24,12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C16.318,4,9.656,8.337,6.306,14.691z"/>
-                <path fill="#4CAF50" d="M24,44c5.166,0,9.86-1.977,13.409-5.192l-6.19-5.238C29.211,35.091,26.715,36,24,36c-5.202,0-9.619-3.317-11.283-7.946l-6.522,5.025C9.505,39.556,16.227,44,24,44z"/>
-                <path fill="#1976D2" d="M43.611,20.083H42V20H24v8h11.303c-0.792,2.237-2.231,4.166-4.087,5.571c0.001-0.001,0.002-0.001,0.003-0.002l6.19,5.238C36.971,39.205,44,34,44,24C44,22.659,43.862,21.35,43.611,20.083z"/>
-            </svg>
-            Continue with Google
-        </button>
-        <p id="loadingMsg" class="loading-text"><i class="fas fa-spinner fa-spin"></i> Authenticating...</p>
+    <div class="notice-card">
+        <h1>PureCall Has Been Discontinued</h1>
         
-        <div class="footer-container" id="footerText">
-            <p class="footer-main">Everyone You Need, One Place.</p>
-            <p class="footer-sub">Made with <span style="color: #ef4444;">❤</span> Under AV</p>
+        <p>PureCall was created as a prototype to simplify the management of local service contacts. Although the concept was successfully demonstrated, the project will not be developed further due to the resources and long-term commitment required to maintain and expand the platform.</p>
+        
+        <div class="signature">
+            Thank you for your interest and support
+            <span>~Abhishek Sahoo</span>
         </div>
+        
+        <a href="https://abhivision.in/PureCall" class="footer-link">abhivision.in/PureCall</a>
     </div>
 
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged } 
-            from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-
-        // Your web app's Firebase configuration
-        const firebaseConfig = {
-            apiKey: "AIzaSyCbRjKDiMFagCSH6LE-ZqpyeiRnIf0onvE",
-            authDomain: "purecall.firebaseapp.com",
-            projectId: "purecall",
-            storageBucket: "purecall.firebasestorage.app",
-            messagingSenderId: "1062741652728",
-            appId: "1:1062741652728:web:f8792621a87a14bbf6370d",
-            measurementId: "G-85EBZ97Y7M"
-        };
-
-        // Initialize Firebase
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-        const provider = new GoogleAuthProvider();
-
-        const loginBtn = document.getElementById('googleLoginBtn');
-        const loadingMsg = document.getElementById('loadingMsg');
-        const footerText = document.getElementById('footerText');
-
-        // Check if user is already logged in
-        onAuthStateChanged(auth, (user) => {
-            if (user) {
-                window.location.href = 'customer.html';
-            }
-        });
-
-        // Handle Google Login Click
-        loginBtn.addEventListener('click', async () => {
-            // Haptic feedback (150ms)
-            if (navigator.vibrate) {
-                navigator.vibrate(150); 
-            }
-
-            loginBtn.style.opacity = '0.7';
-            loginBtn.style.pointerEvents = 'none';
-            footerText.style.display = 'none'; // Hide footer text to make room for loader
-            loadingMsg.style.display = 'block';
-
-            try {
-                await signInWithPopup(auth, provider);
-                window.location.href = 'customer.html';
-            } catch (error) {
-                console.error("Authentication Error:", error);
-                
-                // Only show alert if it's not a user-cancelled popup
-                if (error.code !== 'auth/popup-closed-by-user') {
-                    alert("Failed to sign in: " + error.message);
-                }
-                
-                // Reset button state
-                loginBtn.style.opacity = '1';
-                loginBtn.style.pointerEvents = 'auto';
-                loadingMsg.style.display = 'none';
-                footerText.style.display = 'block';
-            }
-        });
-    </script>
 </body>
 </html>
